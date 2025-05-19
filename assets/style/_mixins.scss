@@ -1,0 +1,9 @@
+@mixin no-style-button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  &:focus {
+    outline: none;
+  }
+}

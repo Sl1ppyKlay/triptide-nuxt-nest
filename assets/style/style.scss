@@ -1,0 +1,20 @@
+@use 'settings/normalize' as *;
+@use 'settings/reset' as *;
+@use 'fonts' as *;
+@use 'variables' as *;
+@use 'theme/dark' as *;
+@use 'theme/light' as *;
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-white-color);
+  font-family: MontserratMedium, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  width: 100%;
+  max-width: min(1640px, calc(100vw - 50px));
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
