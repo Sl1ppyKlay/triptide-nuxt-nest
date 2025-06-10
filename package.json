@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt --host dev",
+    "dev": "nuxt --host dev"
   },
   "dependencies": {
     "nuxt": "^3.17.3",
