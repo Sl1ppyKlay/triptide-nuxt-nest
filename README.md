@@ -1,75 +1,29 @@
-# Nuxt Minimal Starter
+# 💻 Веб-приложение для генерации рандомного места из вашего города
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## 🛠️ Установка
 
-## Setup
-
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+1. Клонирование репозитория
+```
+git clone https://github.com/Sl1ppyKlay/triptide-nuxt-nest.git
 ```
 
-## Development Server
+2. Переход в репозиторий
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+```
+cd triptide-nuxt-nest
 ```
 
-## Production
+3. Установка всех зависимостей
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```
+npm i
 ```
 
-Locally preview production build:
+***
 
-```bash
-# npm
-npm run preview
+## 📖 Описание package.json
 
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+npm run build — сборка проекта
+npm run dev — запуск проекта для тестирования с открытым 0.0.0.0
+```
