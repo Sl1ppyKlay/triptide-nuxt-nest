@@ -4,7 +4,7 @@ import { useCookie, useRequestEvent } from '#app'
 type Theme = 'light' | 'dark'
 
 export const useTheme = () => {
-    const theme = ref<Theme>('dark')
+    const theme = ref<Theme>('light')
 
     const applyTheme = (themeValue: Theme) => {
         if (process.client) {
