@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { useCookie, useRequestEvent } from '#app'
 
+type Theme = 'light' | 'dark';
+
 export function useTheme = () => {
-    type Theme = 'light' | 'dark';
     const theme = ref<Theme>('dark');
 
     const applyTheme = (themeValue: Theme) => {
