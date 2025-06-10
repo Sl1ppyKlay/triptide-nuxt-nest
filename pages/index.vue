@@ -1,7 +1,9 @@
-<template>
-
-</template>
-
 <script setup lang="ts">
-  import TheHeader from "~/components/TheHeader.vue";
+  import TheRoulette from "~/components/TheRoulette.vue";
 </script>
+
+<template>
+  <main>
+    <TheRoulette />
+  </main>
+</template>

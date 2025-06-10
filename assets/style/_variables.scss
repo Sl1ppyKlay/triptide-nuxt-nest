@@ -1,8 +1,14 @@
 :root {
   --white-color: #DBDBDB;
-  --main-blue-color: #587AFF;
+  --primary-blue-color: #587AFF;
   --lightred-color: #FF5353;
   --wheel-arrow-color: #4B69DB;
-
   --auth-color: #EDEFEF;
+  --main-border-color: #{rgba(#587AFF, 0.5)};
+
+  // шрифт
+  --extrabold-font-family: MontserratExtraBold, sans-serif;
+  --bold-font-family: MontserratBold, sans-serif;
+  --medium-font-family: MontserratMedium, sans-serif;
+  --regular-font-family: MontserratRegular, sans-serif;
 }

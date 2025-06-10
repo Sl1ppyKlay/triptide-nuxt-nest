@@ -24,3 +24,12 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'MontserratRegular';
+  src: local('Montserrat-Regular'),
+  url('~/assets/fonts/Montserrat-Regular.woff2') format('woff2'),
+  url('~/assets/fonts/Montserrat-Regular.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+}

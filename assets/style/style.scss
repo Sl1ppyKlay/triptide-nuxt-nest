@@ -5,16 +5,32 @@
 @use 'theme/dark' as *;
 @use 'theme/light' as *;
 
-body {
+html, body {
   background-color: var(--bg-color);
-  color: var(--text-white-color);
+  color: var(--text-color);
   font-family: MontserratMedium, sans-serif;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.5s, color 0.5s;
 }
 
 .container {
   width: 100%;
-  max-width: min(1640px, calc(100vw - 50px));
+  max-width: min(1600px, calc(100vw - 60px));
+  //max-width: 1600px;
+  //padding: 50px;
   margin: 0 auto;
   transition: all 0.3s ease;
+}
+
+
+
+@media (max-width: 1100px) {
+  .container {
+    max-width: min(1600px, calc(100vw - 30px));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: min(1600px, calc(100vw - 20px));
+  }
 }

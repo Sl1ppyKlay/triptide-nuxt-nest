@@ -1,9 +1,11 @@
 <script setup lang="ts">
   // type Language = 'RU' | 'EN';
   // const language = ref<Language>('RU');
+  // type Theme = 'light' | 'dark'
+  // const theme = ref('dark')
 
-  type Theme = 'light' | 'dark'
-  const theme = ref('dark')
+  import { useTheme } from '~/composables/useTheme'
+  const { theme, toggleTheme } = useTheme()
 </script>
 
 <template>
@@ -36,7 +38,7 @@
       </NuxtLink>
     </div>
     <div class="header__right">
-      <button class="header__theme">
+      <button class="header__theme" @click="toggleTheme">
         <template v-if="theme === 'dark'">
           <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
             <path d="M14.4999 22.3542C18.8377 22.3542 22.3541 18.8377 22.3541 14.5C22.3541 10.1623 18.8377 6.64584 14.4999 6.64584C10.1622 6.64584 6.64575 10.1623 6.64575 14.5C6.64575 18.8377 10.1622 22.3542 14.4999 22.3542Z" fill="#E5B925" stroke="#E5B925" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -71,9 +73,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       button {
-        font-family: MontserratBold, sans-serif;
+        font-family: var(--bold-font-family);
       }
     }
     &__theme {
@@ -90,7 +92,7 @@
       @include no-style-button;
       color: var(--auth-color);
       padding: 10px;
-      background-color: var(--main-blue-color);
+      background-color: var(--primary-blue-color);
       border-radius: 10px;
       font-size: 18px;
       transition: transform 0.25s ease;
