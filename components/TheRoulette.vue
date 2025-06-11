@@ -47,7 +47,9 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
           </button>
         </form>
       </div>
-      <div class="roulette__right"></div>
+      <div class="roulette__right">
+
+      </div>
     </div>
 
   </div>
@@ -74,11 +76,25 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
   }
 
   .roulette {
+    @include flex-nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    @media (max-width: 1280px) {
+      gap: 20px;
+    }
+
+    @media (max-width: 1100px) {
+      @include flex-wrap;
+    }
     &-places {
       &__buttons {
         @include flex-wrap;
         gap: 8px;
         margin-bottom: 50px;
+        @media (max-width: 1000px) {
+          margin-bottom: 25px;
+        }
       }
       &__submit {
         @include no-style-button;
@@ -137,6 +153,7 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
         height: 40px;
         padding: 0 10px !important;
         & svg path {
+          @include transition-theme(stroke);
           stroke: var(--arrow-color);
         }
         &:hover {
@@ -160,6 +177,35 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
       border-left: 6px solid var(--main-border-color);
       border-bottom: 6px solid var(--main-border-color);
       padding: 18px 20px 22px 20px;
+      @media (max-width: 1100px) {
+        width: 100%;
+        border-bottom: none;
+        border-right: 3px solid var(--main-border-color);
+        border-left: 3px solid var(--main-border-color);
+        border-top: 3px solid var(--main-border-color);
+
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+    &__right {
+      @include transition-theme(background-color);
+      max-width: 100%;
+      width: 1140px;
+      height: 595px;
+      background-color: var(--block-main-bg-color);
+      border-radius: 25px;
+      border-right: 6px solid var(--main-border-color);
+      border-bottom: 6px solid var(--main-border-color);
+      padding: 90px 80px 30px 80px;
+      @media (max-width: 1100px) {
+        border-right: 3px solid var(--main-border-color);
+        border-left: 3px solid var(--main-border-color);
+        border-bottom: 3px solid var(--main-border-color);
+
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
     }
   }
 </style>
