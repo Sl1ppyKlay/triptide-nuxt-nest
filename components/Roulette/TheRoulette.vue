@@ -1,9 +1,16 @@
 <script lang="ts" setup>
 
+import TheModalCity from "~/components/Roulette/TheModalCity.vue";
+
 const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!');
 
-const city = ref('Хабаровск')
+const city = ref('Хабаровск') // api
 const places = ref(['кинотеатры', 'бары', 'кафе', 'рестораны', 'парки', 'кофе', 'быстрое питание', 'театры'])
+const isModalCityOpen = ref(false);
+
+const handleCitySelect = (selectedCity: string) => {
+  city.value = selectedCity;
+}
 </script>
 
 <template>
@@ -15,13 +22,26 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
       <div class="roulette__left">
         <div class="roulette-city">
           <div class="roulette-city__items">
-            <button class="roulette-city__item roulette-city__item_design">
+            <button class="roulette-city__item roulette-city__item_design"
+                    @click="isModalCityOpen = true"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M7.99998 8.9533C9.14874 8.9533 10.08 8.02206 10.08 6.8733C10.08 5.72455 9.14874 4.7933 7.99998 4.7933C6.85123 4.7933 5.91998 5.72455 5.91998 6.8733C5.91998 8.02206 6.85123 8.9533 7.99998 8.9533Z" stroke="#464646" stroke-width="1.7"/>
+                <path d="M2.41333 5.65998C3.72667 -0.113352 12.28 -0.106685 13.5867 5.66665C14.3533 9.05331 12.2467 11.92 10.4 13.6933C9.06 14.9866 6.94 14.9866 5.59333 13.6933C3.75333 11.92 1.64667 9.04665 2.41333 5.65998Z" stroke="#464646" stroke-width="1.7"/>
+              </svg>
               {{ city }}
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
                 <path d="M11 4L6.88384 7.67453C6.39773 8.10849 5.60227 8.10849 5.11616 7.67453L1 4" stroke="#464646" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
           </div>
+          <Transition name="modal-transition">
+            <TheModalCity
+                v-if="isModalCityOpen"
+                @close="isModalCityOpen = false"
+                @select="handleCitySelect"
+            />
+          </Transition>
         </div>
         <h4 class="roulette-title">
           выберите место
@@ -51,7 +71,6 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
 
       </div>
     </div>
-
   </div>
 </template>
 
@@ -146,7 +165,6 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
       }
       &__items {
         @include flex-nowrap;
-        gap: 10px;
       }
       &__item {
         gap: 8px;
@@ -156,10 +174,10 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
           @include transition-theme(stroke);
           stroke: var(--arrow-color);
         }
-        &:hover {
-          transform: scale(1.05);
-          padding: 0 15px;
-        }
+        //&:hover {
+        //  transform: scale(1.05);
+        //  padding: 0 15px;
+        //}
       }
       &__item_design {
         @include no-style-button;
@@ -169,6 +187,7 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
       }
     }
     &__left {
+      position: relative;
       @include transition-theme(background-color);
       max-width: 100%;
       width: 380px;
@@ -207,5 +226,15 @@ const places = ref(['кинотеатры', 'бары', 'кафе', 'ресто�
         border-top-right-radius: 0;
       }
     }
+  }
+
+  .modal-transition-enter-active,
+  .modal-transition-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-transition-enter-from,
+  .modal-transition-leave-top {
+    opacity: 0;
   }
 </style>
