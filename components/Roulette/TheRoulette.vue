@@ -23,7 +23,7 @@ const handleCitySelect = (selectedCity: string) => {
         <div class="roulette-city">
           <div class="roulette-city__items">
             <button class="roulette-city__item roulette-city__item_design"
-                    @click="isModalCityOpen = true"
+                    @click.stop="isModalCityOpen = true"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M7.99998 8.9533C9.14874 8.9533 10.08 8.02206 10.08 6.8733C10.08 5.72455 9.14874 4.7933 7.99998 4.7933C6.85123 4.7933 5.91998 5.72455 5.91998 6.8733C5.91998 8.02206 6.85123 8.9533 7.99998 8.9533Z" stroke="#464646" stroke-width="1.7"/>
@@ -39,7 +39,8 @@ const handleCitySelect = (selectedCity: string) => {
             <TheModalCity
                 v-if="isModalCityOpen"
                 @close="isModalCityOpen = false"
-                @select="handleCitySelect"
+                @selectCity="handleCitySelect"
+                :current-city="city"
             />
           </Transition>
         </div>
@@ -137,6 +138,7 @@ const handleCitySelect = (selectedCity: string) => {
           color: var(--white-color);
         }
         &.chosen  {
+          pointer-events: none;
           cursor: default;
         }
         &_design {
@@ -230,11 +232,14 @@ const handleCitySelect = (selectedCity: string) => {
 
   .modal-transition-enter-active,
   .modal-transition-leave-active {
-    transition: opacity 0.3s ease;
+    transition: all 0.2s ease;
   }
 
   .modal-transition-enter-from,
-  .modal-transition-leave-top {
+  .modal-transition-leave-to {
     opacity: 0;
+    transform: translateY(-5px);
   }
+
+
 </style>
