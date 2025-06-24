@@ -33,6 +33,7 @@ export const useTheme = () => {
     const cookie = process.client ? useCookie<Theme>('theme', {
         maxAge: 60 * 60 * 24 * 365,
         path: '/',
+        sameSite: 'lax'
     }) : null
 
     const toggleTheme = () => {

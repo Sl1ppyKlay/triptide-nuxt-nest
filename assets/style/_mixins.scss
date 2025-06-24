@@ -8,7 +8,7 @@
   }
 }
 
-@mixin transition-theme($props: all) {
+  @mixin transition-theme($props: all) {
   @each $prop in $props {
     transition: #{$prop} .5s ease;
   }

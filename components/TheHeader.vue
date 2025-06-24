@@ -1,9 +1,4 @@
 <script setup lang="ts">
-  // type Language = 'RU' | 'EN';
-  // const language = ref<Language>('RU');
-  // type Theme = 'light' | 'dark'
-  // const theme = ref('dark')
-
   import { useTheme } from '~/composables/useTheme'
   const { theme, toggleTheme } = useTheme()
 </script>

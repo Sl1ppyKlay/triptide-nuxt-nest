@@ -5,11 +5,17 @@ import TheModalCity from "~/components/Roulette/TheModalCity.vue";
 const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!');
 
 const city = ref('Хабаровск') // api
-const places = ref(['кинотеатры', 'бары', 'кафе', 'рестораны', 'парки', 'кофе', 'быстрое питание', 'театры'])
+const places = ref(['Не выбрано', 'кинотеатры', 'бары', 'кафе', 'рестораны', 'парки', 'кофе', 'быстрое питание', 'театры'])
+const selectPlace = ref('Не выбрано')
 const isModalCityOpen = ref(false);
 
 const handleCitySelect = (selectedCity: string) => {
   city.value = selectedCity;
+}
+
+const currentSelectPlace = (place: string) => {
+  selectPlace.value = place;
+  console.log(selectPlace.value);
 }
 </script>
 
@@ -50,12 +56,10 @@ const handleCitySelect = (selectedCity: string) => {
         <form class="roulette-places">
           <div class="roulette-places__buttons">
             <button type="button"
-                    class="roulette-places__button roulette-places__button_design chosen">
-              Не выбрано
-            </button>
-            <button type="button"
                     class="roulette-places__button roulette-places__button_design"
                     v-for="(place, index) in places" :key="index"
+                    @click="currentSelectPlace(place)"
+                    :class="{'chosen': selectPlace === place}"
             >
               {{ place }}
             </button>
@@ -140,6 +144,8 @@ const handleCitySelect = (selectedCity: string) => {
         &.chosen  {
           pointer-events: none;
           cursor: default;
+          background-color: var(--primary-blue-color);
+          color: var(--white-color);
         }
         &_design {
           @include button-main-design;
