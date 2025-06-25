@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import TheRoulette from "~/components/Roulette/TheRoulette.vue";
+  import TheBlockRoulette from "~/components/Roulette/TheBlockRoulette.vue";
 </script>
 
 <template>
   <main>
-    <TheRoulette />
+    <TheBlockRoulette />
   </main>
 </template>

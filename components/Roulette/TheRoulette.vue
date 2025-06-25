@@ -1,251 +1,121 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+// в будущем брать из бд
+const places = [
+  {
+    cinema: [
+        { title: 'oneCinema' },
+        { title: 'twoCinema' },
+        { title: 'threeCinema' }
+    ],
+    have: [
+      { title: 'oneHave' },
+      { title: 'twoHave' },
+      { title: 'threeHave' },
+      { title: 'threeHave' },
+      { title: 'threeHave' },
+      { title: 'threeHave' },
+      { title: 'threeHave' }
+    ]
+  }
+]
 
-import TheModalCity from "~/components/Roulette/TheModalCity.vue";
+const colors = [
+  '#FF6347',
+  '#FFD700',
+  '#32CD32',
+  '#1E90FF',
+  '#FF69B4',
+  '#8A2BE2',
+  '#00CED1',
+  '#FFA500',
+  '#6B8E23',
+];
 
-const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!');
+type selectType = 'cinema' | 'have'
+const selectPlace = ref<selectType>('cinema')
 
-const city = ref('Хабаровск') // api
-const places = ref(['Не выбрано', 'кинотеатры', 'бары', 'кафе', 'рестораны', 'парки', 'кофе', 'быстрое питание', 'театры'])
-const selectPlace = ref('Не выбрано')
-const isModalCityOpen = ref(false);
+// логика рулетки
+class Roulette {
+  sliceCircle: number
 
-const handleCitySelect = (selectedCity: string) => {
-  city.value = selectedCity;
+  constructor() {
+    this.sliceCircle = 360 / places[0][selectPlace.value].map(item => item.title).length
+  }
 }
 
-const currentSelectPlace = (place: string) => {
-  selectPlace.value = place;
-  console.log(selectPlace.value);
-}
+
+const roulette = new Roulette()
+const sliceLength = roulette.sliceCircle
+
 </script>
 
 <template>
-  <div class="main-block">
-    <h1 class="main-block__h1">
-      {{ titleText }}
-    </h1>
+  <div class="roulette-wrapper">
     <div class="roulette">
-      <div class="roulette__left">
-        <div class="roulette-city">
-          <div class="roulette-city__items">
-            <button class="roulette-city__item roulette-city__item_design"
-                    @click.stop="isModalCityOpen = true"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M7.99998 8.9533C9.14874 8.9533 10.08 8.02206 10.08 6.8733C10.08 5.72455 9.14874 4.7933 7.99998 4.7933C6.85123 4.7933 5.91998 5.72455 5.91998 6.8733C5.91998 8.02206 6.85123 8.9533 7.99998 8.9533Z" stroke="#464646" stroke-width="1.7"/>
-                <path d="M2.41333 5.65998C3.72667 -0.113352 12.28 -0.106685 13.5867 5.66665C14.3533 9.05331 12.2467 11.92 10.4 13.6933C9.06 14.9866 6.94 14.9866 5.59333 13.6933C3.75333 11.92 1.64667 9.04665 2.41333 5.65998Z" stroke="#464646" stroke-width="1.7"/>
-              </svg>
-              {{ city }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
-                <path d="M11 4L6.88384 7.67453C6.39773 8.10849 5.60227 8.10849 5.11616 7.67453L1 4" stroke="#464646" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
-          <Transition name="modal-transition">
-            <TheModalCity
-                v-if="isModalCityOpen"
-                @close="isModalCityOpen = false"
-                @selectCity="handleCitySelect"
-                :current-city="city"
-            />
-          </Transition>
-        </div>
-        <h4 class="roulette-title">
-          выберите место
-        </h4>
-        <form class="roulette-places">
-          <div class="roulette-places__buttons">
-            <button type="button"
-                    class="roulette-places__button roulette-places__button_design"
-                    v-for="(place, index) in places" :key="index"
-                    @click="currentSelectPlace(place)"
-                    :class="{'chosen': selectPlace === place}"
-            >
-              {{ place }}
-            </button>
-          </div>
-          <button type="submit"
-                  class="roulette-places__submit"
-                  @click.prevent=""
-          >
-            генерация места
-          </button>
-        </form>
+      <div class="roulette__arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="61" height="96" viewBox="0 0 61 96" fill="none">
+          <path d="M60.3777 26.5483C60.3777 15.0483 45.1177 2.65733e-05 29.3776 2.79493e-05C13.6375 2.93254e-05 5.37762 14.5483 0.877597 27.5C-6.29162 48.1339 32.8485 47.0483 31.8484 95.0483C31.8484 95.0483 60.3777 60.5156 60.3777 26.5483Z" fill="#4B69DB"/>
+          <path d="M32.6787 93.1929C33.4551 92.187 34.5654 90.7106 35.8984 88.8325C38.5649 85.0759 42.1206 79.7133 45.6758 73.2935C52.7932 60.4413 59.8779 43.4058 59.8779 26.5483C59.8779 20.9971 56.1746 14.4844 50.4463 9.33349C44.7302 4.19361 37.094 0.500588 29.3779 0.500486C21.6848 0.500486 15.813 4.04746 11.2891 9.22217C6.75502 14.4085 3.59047 21.2151 1.3496 27.6646C0.477598 30.1745 0.318917 32.3259 0.682612 34.2661C1.04691 36.2092 1.94191 37.9775 3.23339 39.7104C4.52784 41.4474 6.20916 43.1345 8.12988 44.9175C10.0313 46.6826 12.2085 48.5776 14.3936 50.6489C18.7958 54.8221 23.4181 59.8788 26.8721 66.9253C30.1861 73.6864 32.4097 82.2535 32.3643 93.5933C32.4612 93.4689 32.5677 93.3366 32.6787 93.1929Z" stroke="black" stroke-opacity="0.05"/>
+        </svg>
       </div>
-      <div class="roulette__right">
-
+      <div class="roulette-overflow">
+        <div class="roulette-items">
+          <div class="roulette-items__item"
+               v-for="(item, i) in places[0][selectPlace]"
+               :key="i"
+               :style="
+             {
+               transform: `rotate(${i * (sliceLength)}deg)`,
+clipPath: `polygon(50% 50%, 100% 0, 100% 100%, 50% 50%)`, // Полный сектор
+               backgroundColor: colors[i],
+             }"
+          >
+            {{item.title}}
+          </div>
+        </div>
       </div>
     </div>
+    <h2 class="roulette-results"></h2>
   </div>
 </template>
+
 
 <style scoped lang="scss">
   @use '~/assets/style/mixins.scss' as *;
 
-  .main-block {
-    padding: 0 18px;
-    &__h1 {
-      margin-bottom: 36px;
-      font-family: var(--bold-font-family);
-      font-size: 28px;
-      color: var(--h1-main-color);
-      @include transition-theme(color);
-    }
-    @media (max-width: 1100px) {
-      padding: 0 12px;
-    }
-    @media (max-width: 768px) {
-      padding: 0 4px;
-    }
-  }
-
   .roulette {
-    @include flex-nowrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 40px;
-    @media (max-width: 1280px) {
-      gap: 20px;
-    }
-
-    @media (max-width: 1100px) {
-      @include flex-wrap;
-    }
-    &-places {
-      &__buttons {
-        @include flex-wrap;
-        gap: 8px;
-        margin-bottom: 50px;
-        @media (max-width: 1000px) {
-          margin-bottom: 25px;
-        }
-      }
-      &__submit {
-        @include no-style-button;
-        @include flex-nowrap;
-        @include transition-theme(all);
-        @include button-main-design;
-        font-family: var(--medium-font-family);
-        width: 100%;
-        height: 45px;
-        &:hover {
-          transform: scale(1.03);
-        }
-      }
-      &__button {
-        @include no-style-button;
-        @include transition-theme(all);
-        height: 40px;
-        padding: 0 10px !important;
-        &:hover:not(.chosen) {
-          background-color: var(--primary-blue-color);
-          color: var(--white-color);
-        }
-        &.chosen  {
-          pointer-events: none;
-          cursor: default;
-          background-color: var(--primary-blue-color);
-          color: var(--white-color);
-        }
-        &_design {
-          @include button-main-design;
-        }
-        &.chosen {
-          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.25);
-        }
-      }
-    }
-    &-title {
-      @include transition-theme(color);
-      font-size: 16px;
-      font-family: var(--regular-font-family);
-      color: var(--button-main-text-color);
-      margin-bottom: 18px;
-    }
-    &-city {
-      overflow-y: scroll;
-      border-radius: 10px;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      margin-bottom: 30px;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      &__items {
-        @include flex-nowrap;
-      }
-      &__item {
-        gap: 8px;
-        height: 40px;
-        padding: 0 10px !important;
-        & svg path {
-          @include transition-theme(stroke);
-          stroke: var(--arrow-color);
-        }
-        //&:hover {
-        //  transform: scale(1.05);
-        //  padding: 0 15px;
-        //}
-      }
-      &__item_design {
-        @include no-style-button;
-        @include flex-nowrap;
-        @include transition-theme(all);
-        @include button-main-design;
-      }
-    }
-    &__left {
+    position: relative;
+    width: 495px;
+    height: 477px;
+    border-radius: 50%;
+    background: var(--wheel-color);
+    border: 3px solid var(--wheel-border-color);
+    @include transition-theme(all);
+    &-overflow {
       position: relative;
-      @include transition-theme(background-color);
-      max-width: 100%;
-      width: 380px;
-      background-color: var(--block-main-bg-color);
-      border-radius: 25px;
-      border-left: 6px solid var(--main-border-color);
-      border-bottom: 6px solid var(--main-border-color);
-      padding: 18px 20px 22px 20px;
-      @media (max-width: 1100px) {
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    &__arrow {
+      z-index: 1000;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -50px;
+      svg {
+        display: block;
+      }
+    }
+    &-items {
+      &__item {
+        position: absolute;
         width: 100%;
-        border-bottom: none;
-        border-right: 3px solid var(--main-border-color);
-        border-left: 3px solid var(--main-border-color);
-        border-top: 3px solid var(--main-border-color);
-
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-    }
-    &__right {
-      @include transition-theme(background-color);
-      max-width: 100%;
-      width: 1140px;
-      height: 595px;
-      background-color: var(--block-main-bg-color);
-      border-radius: 25px;
-      border-right: 6px solid var(--main-border-color);
-      border-bottom: 6px solid var(--main-border-color);
-      padding: 90px 80px 30px 80px;
-      @media (max-width: 1100px) {
-        border-right: 3px solid var(--main-border-color);
-        border-left: 3px solid var(--main-border-color);
-        border-bottom: 3px solid var(--main-border-color);
-
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transform-origin: 50% 50%;
       }
     }
   }
-
-  .modal-transition-enter-active,
-  .modal-transition-leave-active {
-    transition: all 0.2s ease;
-  }
-
-  .modal-transition-enter-from,
-  .modal-transition-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-
-
 </style>
