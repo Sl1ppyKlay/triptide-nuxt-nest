@@ -66,7 +66,7 @@ const sliceLength = roulette.sliceCircle
                :style="
              {
                transform: `rotate(${i * (sliceLength)}deg)`,
-clipPath: `polygon(50% 50%, 100% 0, 100% 100%, 50% 50%)`, // Полный сектор
+               clipPath: `polygon(50% 50%, 100% 0, 100% 100%, 50% 50%)`,
                backgroundColor: colors[i],
              }"
           >
