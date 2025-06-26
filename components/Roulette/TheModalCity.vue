@@ -1,13 +1,11 @@
 <script setup lang="ts">
-  const props = defineProps({
-    currentCity: {
-      type: String,
-      required: true
-    }
-  })
+  import cities from '~/assets/data/cities.json'
+
+  const props = defineProps<{ currentCity: string }>()
   const emit = defineEmits(['close', 'selectCity']);
 
-  const cities = ['Хабаровск', 'Владивосток', 'Спасск-Дальний'];
+  const allCity = computed(() => cities.map(c => c.city))
+
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     if (!target.closest('.roulette-modal')) {
@@ -36,7 +34,7 @@
     <div class="roulette-modal">
       <ul class="roulette-modal__list">
         <li class="roulette-modal__item"
-            v-for="(city, i) in cities"
+            v-for="(city, i) in allCity"
             :key="i"
             @click="selectCity(city)"
             :class="{'roulette-modal__item_disabled': city === currentCity}"
@@ -58,7 +56,6 @@
     background-color: var(--modal-city-color);
     border: 1px solid var(--modal-border-color);
     border-radius: 10px;
-    //@include transition-theme(background-color);
     &__list {
       @include flex-wrap;
       gap: 8px;

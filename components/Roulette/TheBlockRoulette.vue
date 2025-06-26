@@ -2,13 +2,20 @@
 
 import TheModalCity from "~/components/Roulette/TheModalCity.vue";
 import TheRoulette from "~/components/Roulette/TheRoulette.vue";
+import cities from '~/assets/data/cities.json'
 
-const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!');
+const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!'); // в будущем, чтобы менялся
 
-const city = ref('Хабаровск') // api
-const places = ref(['Не выбрано', 'кинотеатры', 'бары', 'кафе', 'рестораны', 'парки', 'кофе', 'быстрое питание', 'театры'])
-const selectPlace = ref('Не выбрано')
 const isModalCityOpen = ref(false);
+
+const city = ref(cities[0].city)
+const selectPlace = ref('Не выбрано')
+const currentCity = computed(() => cities.find(c => c.city === city.value))
+
+const places = computed(() => {
+    const arr = currentCity.value ? Object.keys(currentCity.value.place) : []
+    return ["Не выбрано", ...arr]
+});
 
 const handleCitySelect = (selectedCity: string) => {
   city.value = selectedCity;
@@ -18,6 +25,10 @@ const currentSelectPlace = (place: string) => {
   selectPlace.value = place;
   console.log(selectPlace.value);
 }
+
+watch(currentCity, () => {
+  selectPlace.value = places.value[0] || '';
+});
 </script>
 
 <template>
@@ -74,7 +85,7 @@ const currentSelectPlace = (place: string) => {
         </form>
       </div>
       <div class="roulette__right">
-        <TheRoulette/>
+        <TheRoulette :city="city" :place="selectPlace" />
       </div>
     </div>
   </div>
@@ -183,10 +194,6 @@ const currentSelectPlace = (place: string) => {
           @include transition-theme(stroke);
           stroke: var(--arrow-color);
         }
-        //&:hover {
-        //  transform: scale(1.05);
-        //  padding: 0 15px;
-        //}
       }
       &__item_design {
         @include no-style-button;

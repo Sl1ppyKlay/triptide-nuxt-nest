@@ -1,51 +1,33 @@
 <script setup lang="ts">
-// в будущем брать из бд
-const places = [
-  {
-    cinema: [
-        { title: 'oneCinema' },
-        { title: 'twoCinema' },
-        { title: 'threeCinema' }
-    ],
-    have: [
-      { title: 'oneHave' },
-      { title: 'twoHave' },
-      { title: 'threeHave' },
-      { title: 'threeHave' },
-      { title: 'threeHave' },
-      { title: 'threeHave' },
-      { title: 'threeHave' }
-    ]
+  import cities from '~/assets/data/cities.json'
+
+  type Place = { id: number; title: string }
+
+  const props = defineProps<{ city: string, place: string }>()
+  const currentCity = computed(() => cities.find(c => c.city === props.city) )
+
+  const places = computed<Place[]>(() => {
+    if (!currentCity.value || !props.place || props.place === "Не выбрано")
+      return []
+    return currentCity.value.place[props.place] || []
+  })
+
+  // логика рулетки
+  class Roulette {
+    sliceCircle: number
+    skew: number
+
+    constructor(itemCount: number) {
+      this.sliceCircle = itemCount > 0 ? 360 / itemCount : 0
+      this.skew = this.sliceCircle - 90
+    }
   }
-]
 
-const colors = [
-  '#FF6347',
-  '#FFD700',
-  '#32CD32',
-  '#1E90FF',
-  '#FF69B4',
-  '#8A2BE2',
-  '#00CED1',
-  '#FFA500',
-  '#6B8E23',
-];
+  const roulette = computed(() => new Roulette(places.value.length))
+  const sliceLength = computed(() => roulette.value.sliceCircle)
+  const skew = computed(() => roulette.value.skew)
 
-type selectType = 'cinema' | 'have'
-const selectPlace = ref<selectType>('cinema')
-
-// логика рулетки
-class Roulette {
-  sliceCircle: number
-
-  constructor() {
-    this.sliceCircle = 360 / places[0][selectPlace.value].map(item => item.title).length
-  }
-}
-
-
-const roulette = new Roulette()
-const sliceLength = roulette.sliceCircle
+  const isTwoSectors = computed(() => places.value.length === 2);
 
 </script>
 
@@ -60,17 +42,32 @@ const sliceLength = roulette.sliceCircle
       </div>
       <div class="roulette-overflow">
         <div class="roulette-items">
+        <!-- сектора -->
           <div class="roulette-items__item"
-               v-for="(item, i) in places[0][selectPlace]"
-               :key="i"
+               v-for="(item, i) in places"
+               :key="item.id"
+               :style="isTwoSectors
+              ? {
+            left: 0,
+            top: i === 0 ? 0 : '50%',
+            transform: i === 0 ? 'rotate(0deg)' : 'rotate(360deg)',
+            transformOrigin: 'center top'
+                }
+                : {
+                    transform: `rotate(${sliceLength * i + skew - sliceLength / 2}deg) skewX(${skew}deg)`
+                  }">
+          </div>
+        <!-- текст -->
+          <div class="roulette-items__label"
+               v-for="(item, i) in places"
+               :key="item.id"
                :style="
              {
-               transform: `rotate(${i * (sliceLength)}deg)`,
-               clipPath: `polygon(50% 50%, 100% 0, 100% 100%, 50% 50%)`,
-               backgroundColor: colors[i],
-             }"
-          >
-            {{item.title}}
+               transform: `rotate(${sliceLength * i }deg)`
+             }">
+            <span class="roulette-items__title">
+              {{ item.title }}
+            </span>
           </div>
         </div>
       </div>
@@ -86,7 +83,7 @@ const sliceLength = roulette.sliceCircle
   .roulette {
     position: relative;
     width: 495px;
-    height: 477px;
+    height: 475px;
     border-radius: 50%;
     background: var(--wheel-color);
     border: 3px solid var(--wheel-border-color);
@@ -112,9 +109,32 @@ const sliceLength = roulette.sliceCircle
         position: absolute;
         width: 100%;
         height: 100%;
+        top: -50%;
+        left: 50%;
+        transform-origin: 0 100%;
+        &:nth-child(2n) {
+          background-color: var(--wheel-border-color); // поменять
+        }
+      }
+      &__label {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 50%;
+        height: 50%;
+        transform-origin: 0 100%;
+      }
+      &__title {
+        position: absolute;
         top: 0;
         left: 0;
-        transform-origin: 50% 50%;
+        margin-left: -12px;
+        padding-left: 25px;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+        text-align: center;
+
       }
     }
   }
