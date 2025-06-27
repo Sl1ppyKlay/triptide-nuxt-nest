@@ -1,3 +1,11 @@
+<!--
+ x - СБРОС СТАТУСА ПРИ СМЕНЕ КАТЕГОРИИ
+ x - ОТКЮЧЕНИЕ КНОПКИ ПРИ ПРОКРУТКИ
+ x - ВЫВОД РЕЗУЛЬТАТОВ
+ x - ПРЕЛОАДЕР
+-->
+
+
 <script setup lang="ts">
   import cities from '~/assets/data/cities.json'
 
@@ -16,28 +24,38 @@
 
   const currentRotation = ref<number>(0)
   const selectedPlace = ref<string | null>(null)
+  const transitions = [
+    'transform 8s cubic-bezier(.22,.68,.34,1.1)',
+    'transform 9s cubic-bezier(.4,0,.2,1)',
+    'transform 12s cubic-bezier(.23,1.19,.68,1.07)',
+    'transform 10s cubic-bezier(.4,0,.2,1)',
+    'transform 12s cubic-bezier(.4,0,.2,1)',
+  ]
+  const currentTransitions = ref(transitions[0])
+
+  watch(currentTransitions, () => {
+    console.log(currentTransitions.value)
+  })
 
   // логика рулетки
   class Roulette {
     sliceCircle: number
     skew: number
     places: Place[]
-    idleSpin: number
 
     constructor(places: Place[]) {
-      this.idleSpin = 5
       this.places = places
       this.sliceCircle = places.length > 0 ? 360 / places.length : 0
       this.skew = this.sliceCircle - 90
     }
 
-    rotate (index: number):number {
+    rotate(index: number, currentRotation: number): number {
+      const initSpin = 5
       const segmentDeg = -(this.sliceCircle * index - this.sliceCircle / 2)
-      const randomDeg = (this.sliceCircle - 4) * Math.random() - 2
-      const idleS = 360 * this.idleSpin
+      const randomDeg = (this.sliceCircle) * Math.random()
 
-      const rotate = segmentDeg - randomDeg - idleS
-      return rotate
+      const rotate = currentRotation - (currentRotation % 360)
+      return rotate - initSpin * 360 + segmentDeg - randomDeg
     }
 
     spin(currentRotation: Ref<number>, selectedPlace: Ref<string | null>) {
@@ -47,7 +65,7 @@
         return null
       }
       const randomIndex = Math.floor(Math.random() * this.places.length)
-      currentRotation.value = this.rotate(randomIndex)
+      currentRotation.value = this.rotate(randomIndex, currentRotation.value)
       selectedPlace.value = this.places[randomIndex].title
       return this.places[randomIndex]
     }
@@ -59,7 +77,13 @@
 
   const isTwoSectors = computed(() => places.value.length === 2)
 
+  const getRandomTransition = () => {
+    const idx = Math.floor(Math.random() * transitions.length)
+    return transitions[idx]
+  }
+
   const spin = () => {
+    currentTransitions.value = getRandomTransition()
     const selected = roulette.value.spin(currentRotation, selectedPlace)
     emit('selected-place', selected)
   }
@@ -80,7 +104,8 @@
         <div class="roulette-items"
              :style="
              {
-               transform: `rotate(${currentRotation}deg)`
+               transform: `rotate(${currentRotation}deg)`,
+               transition: currentTransitions
              }">
         <!-- сектора -->
           <div class="roulette-items__item"
