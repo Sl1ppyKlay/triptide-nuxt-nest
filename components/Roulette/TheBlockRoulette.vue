@@ -4,31 +4,42 @@ import TheModalCity from "~/components/Roulette/TheModalCity.vue";
 import TheRoulette from "~/components/Roulette/TheRoulette.vue";
 import cities from '~/assets/data/cities.json'
 
-const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!'); // в будущем, чтобы менялся
+const roulette = ref<InstanceType <typeof TheRoulette> | null>(null);
 
-const isModalCityOpen = ref(false);
+const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!') // в будущем, чтобы менялся
+const isModalCityOpen = ref(false)
 
 const city = ref(cities[0].city)
 const selectPlace = ref('Не выбрано')
 const currentCity = computed(() => cities.find(c => c.city === city.value))
 
+const handlePlaceSelect = (place: {id: number; title: string} | null) => { // убрать
+  console.log(place.title)
+}
+
 const places = computed(() => {
     const arr = currentCity.value ? Object.keys(currentCity.value.place) : []
     return ["Не выбрано", ...arr]
-});
+})
 
 const handleCitySelect = (selectedCity: string) => {
-  city.value = selectedCity;
+  city.value = selectedCity
 }
 
 const currentSelectPlace = (place: string) => {
-  selectPlace.value = place;
-  console.log(selectPlace.value);
+  selectPlace.value = place
+  console.log(selectPlace.value)
+}
+
+const handleSpin = () => {
+  if (roulette.value) {
+    roulette.value.spin()
+  }
 }
 
 watch(currentCity, () => {
-  selectPlace.value = places.value[0] || '';
-});
+  selectPlace.value = places.value[0] || ''
+})
 </script>
 
 <template>
@@ -78,14 +89,14 @@ watch(currentCity, () => {
           </div>
           <button type="submit"
                   class="roulette-places__submit"
-                  @click.prevent=""
+                  @click.prevent="handleSpin"
           >
             генерация места
           </button>
         </form>
       </div>
       <div class="roulette__right">
-        <TheRoulette :city="city" :place="selectPlace" />
+        <TheRoulette ref="roulette" :city="city" :place="selectPlace" @selected-place="handlePlaceSelect"/>
       </div>
     </div>
   </div>
@@ -233,6 +244,21 @@ watch(currentCity, () => {
       border-right: 6px solid var(--main-border-color);
       border-bottom: 6px solid var(--main-border-color);
       padding: 70px 50px 20px 50px;
+      @media (max-width: 1300px) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 70px 20px 20px 20px;
+        height: auto;
+      }
+      @media (max-width: 525px) {
+        padding: 60px 20px;
+      }
+      @media (max-width: 370px) {
+        padding: 40px 20px;
+      }
       @media (max-width: 1100px) {
         border-right: 3px solid var(--main-border-color);
         border-left: 3px solid var(--main-border-color);

@@ -4,6 +4,8 @@
   type Place = { id: number; title: string }
 
   const props = defineProps<{ city: string, place: string }>()
+  const emit = defineEmits(['selected-place'])
+
   const currentCity = computed(() => cities.find(c => c.city === props.city) )
 
   const places = computed<Place[]>(() => {
@@ -12,23 +14,57 @@
     return currentCity.value.place[props.place] || []
   })
 
+  const currentRotation = ref<number>(0)
+  const selectedPlace = ref<string | null>(null)
+
   // логика рулетки
   class Roulette {
     sliceCircle: number
     skew: number
+    places: Place[]
+    idleSpin: number
 
-    constructor(itemCount: number) {
-      this.sliceCircle = itemCount > 0 ? 360 / itemCount : 0
+    constructor(places: Place[]) {
+      this.idleSpin = 5
+      this.places = places
+      this.sliceCircle = places.length > 0 ? 360 / places.length : 0
       this.skew = this.sliceCircle - 90
+    }
+
+    rotate (index: number):number {
+      const segmentDeg = -(this.sliceCircle * index - this.sliceCircle / 2)
+      const randomDeg = (this.sliceCircle - 4) * Math.random() - 2
+      const idleS = 360 * this.idleSpin
+
+      const rotate = segmentDeg - randomDeg - idleS
+      return rotate
+    }
+
+    spin(currentRotation: Ref<number>, selectedPlace: Ref<string | null>) {
+      if (this.places.length === 0) {
+        currentRotation.value = 0
+        selectedPlace.value = null
+        return null
+      }
+      const randomIndex = Math.floor(Math.random() * this.places.length)
+      currentRotation.value = this.rotate(randomIndex)
+      selectedPlace.value = this.places[randomIndex].title
+      return this.places[randomIndex]
     }
   }
 
-  const roulette = computed(() => new Roulette(places.value.length))
+  const roulette = computed(() => new Roulette(places.value))
   const sliceLength = computed(() => roulette.value.sliceCircle)
   const skew = computed(() => roulette.value.skew)
 
-  const isTwoSectors = computed(() => places.value.length === 2);
+  const isTwoSectors = computed(() => places.value.length === 2)
 
+  const spin = () => {
+    const selected = roulette.value.spin(currentRotation, selectedPlace)
+    emit('selected-place', selected)
+  }
+
+  defineExpose({ spin })
 </script>
 
 <template>
@@ -41,7 +77,11 @@
         </svg>
       </div>
       <div class="roulette-overflow">
-        <div class="roulette-items">
+        <div class="roulette-items"
+             :style="
+             {
+               transform: `rotate(${currentRotation}deg)`
+             }">
         <!-- сектора -->
           <div class="roulette-items__item"
                v-for="(item, i) in places"
@@ -81,13 +121,18 @@
   @use '~/assets/style/mixins.scss' as *;
 
   .roulette {
+    height: 100%;
+    width: 100%;
     position: relative;
-    width: 495px;
-    height: 475px;
     border-radius: 50%;
     background: var(--wheel-color);
     border: 3px solid var(--wheel-border-color);
     @include transition-theme(all);
+    &-wrapper {
+      width: 100%;
+      max-width: 495px;
+      aspect-ratio: 495/475;
+    }
     &-overflow {
       position: relative;
       height: 100%;
@@ -99,12 +144,20 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: -50px;
+      top: -10%;
+      width: 12%;
+      @media (max-width: 410px) {
+        top: -11%;
+      }
       svg {
+        width: 100%;
+        height: auto;
         display: block;
       }
     }
     &-items {
+      width: 100%;
+      height: 100%;
       &__item {
         position: absolute;
         width: 100%;
@@ -128,13 +181,20 @@
         position: absolute;
         top: 0;
         left: 0;
-        margin-left: -12px;
-        padding-left: 25px;
+        margin-left: -6%;
+        margin-top: 8%;
         width: 100%;
         height: 100%;
         transform: rotate(-90deg);
         text-align: center;
-
+        font-size: 3.5vw;
+        font-family: var(--medium-font-family);
+        @media (min-width: 550px) {
+          font-size: 18px;
+        }
+        @media (max-width: 350px) {
+          font-size: 3.2vw;
+        }
       }
     }
   }
