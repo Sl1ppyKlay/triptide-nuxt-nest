@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
   import cities from '~/assets/data/cities.json'
+  import {onUnmounted} from "vue";
 
   type Place = { id: number; title: string }
 
@@ -24,18 +25,24 @@
 
   const currentRotation = ref<number>(0)
   const selectedPlace = ref<string | null>(null)
-  const transitions = [
+  const timerPlace = ref<string | null>(null)
+  const transitions = ref([
     'transform 8s cubic-bezier(.22,.68,.34,1.1)',
     'transform 9s cubic-bezier(.4,0,.2,1)',
     'transform 12s cubic-bezier(.23,1.19,.68,1.07)',
     'transform 10s cubic-bezier(.4,0,.2,1)',
     'transform 12s cubic-bezier(.4,0,.2,1)',
-  ]
-  const currentTransitions = ref(transitions[0])
+  ])
+  const currentTransitions = ref(transitions.value[0])
 
-  watch(currentTransitions, () => {
-    console.log(currentTransitions.value)
+  const timerTransitions = computed(() => {
+    return Number(currentTransitions.value.split(' ')[1].replace('s', ''))
   })
+
+  watch(timerTransitions, () => {
+    console.log(timerTransitions.value)
+  })
+
 
   // логика рулетки
   class Roulette {
@@ -58,7 +65,7 @@
       return rotate - initSpin * 360 + segmentDeg - randomDeg
     }
 
-    spin(currentRotation: Ref<number>, selectedPlace: Ref<string | null>) {
+    spin(currentRotation: Ref<number>, selectedPlace: Ref<string | null>, timerTransitions: Ref<number>) {
       if (this.places.length === 0) {
         currentRotation.value = 0
         selectedPlace.value = null
@@ -66,7 +73,9 @@
       }
       const randomIndex = Math.floor(Math.random() * this.places.length)
       currentRotation.value = this.rotate(randomIndex, currentRotation.value)
-      selectedPlace.value = this.places[randomIndex].title
+      setTimeout(() => {
+        selectedPlace.value = this.places[randomIndex].title
+      }, timerTransitions.value * 1000)
       return this.places[randomIndex]
     }
   }
@@ -78,13 +87,13 @@
   const isTwoSectors = computed(() => places.value.length === 2)
 
   const getRandomTransition = () => {
-    const idx = Math.floor(Math.random() * transitions.length)
-    return transitions[idx]
+    const idx = Math.floor(Math.random() * transitions.value.length)
+    return transitions.value[idx]
   }
 
   const spin = () => {
     currentTransitions.value = getRandomTransition()
-    const selected = roulette.value.spin(currentRotation, selectedPlace)
+    const selected = roulette.value.spin(currentRotation, selectedPlace, timerTransitions)
     emit('selected-place', selected)
   }
 
@@ -138,7 +147,7 @@
       </div>
     </div>
     <h2 class="roulette-results">
-      Вы идете в <span v-if="selectedPlace !== null">{{selectedPlace}}</span>
+      Вы идете в <span v-if="selectedPlace !== null">{{ selectedPlace }}</span>
       <span v-else>???</span>
     </h2>
   </div>
