@@ -137,7 +137,10 @@
         </div>
       </div>
     </div>
-    <h2 class="roulette-results"></h2>
+    <h2 class="roulette-results">
+      Вы идете в <span v-if="selectedPlace !== null">{{selectedPlace}}</span>
+      <span v-else>???</span>
+    </h2>
   </div>
 </template>
 
@@ -153,10 +156,23 @@
     background: var(--wheel-color);
     border: 3px solid var(--wheel-border-color);
     @include transition-theme(all);
+    &-results {
+      font-size: 30px;
+      font-family: var(--extrabold-font-family);
+      color: var(--text-color);
+      @include transition-theme(all);
+      span {
+        color: var(--red-color);
+      }
+    }
     &-wrapper {
+      gap: 102px;
+      @include flex-wrap;
       width: 100%;
       max-width: 495px;
       aspect-ratio: 495/475;
+      flex-direction: column;
+      justify-content: center ;
     }
     &-overflow {
       position: relative;
