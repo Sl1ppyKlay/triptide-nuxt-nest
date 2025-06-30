@@ -9,12 +9,24 @@ const roulette = ref<InstanceType <typeof TheRoulette> | null>(null);
 const titleText = ref('МЫ ГЕНЕРИРУЕМ — ВЫ ИДЕТЕ!') // в будущем, чтобы менялся
 const isModalCityOpen = ref(false)
 
-const city = ref(cities[0].city)
-const selectPlace = ref('Не выбрано')
+const city = ref<string>(cities[0].city)
+const selectPlace = ref<string>('Не выбрано')
 const currentCity = computed(() => cities.find(c => c.city === city.value))
+const currentRotation = ref<number>(0)
+const timerTransition = ref<number>(0)
+
+const isActiveButton = ref(true)
 
 const handlePlaceSelect = (place: {id: number; title: string} | null) => { // убрать
   console.log(place.title)
+}
+
+const handleCurrentRotation = (rotation: number) => {
+  currentRotation.value = rotation
+}
+const handleTimerTransition = (timer: number) => {
+  timerTransition.value = timer
+  console.log(timerTransition.value)
 }
 
 const places = computed(() => {
@@ -39,6 +51,13 @@ const handleSpin = () => {
 
 watch(currentCity, () => {
   selectPlace.value = places.value[0] || ''
+})
+
+watch(currentRotation, () => {
+  isActiveButton.value = false
+  setTimeout(() => {
+    isActiveButton.value = true
+  }, timerTransition.value * 1000)
 })
 </script>
 
@@ -76,13 +95,14 @@ watch(currentCity, () => {
         <h4 class="roulette-title">
           выберите место
         </h4>
-        <form class="roulette-places">
+        <form class="roulette-places" >
           <div class="roulette-places__buttons">
             <button type="button"
                     class="roulette-places__button roulette-places__button_design"
                     v-for="(place, index) in places" :key="index"
                     @click="currentSelectPlace(place)"
                     :class="{'chosen': selectPlace === place}"
+                    :disabled="!isActiveButton"
             >
               {{ place }}
             </button>
@@ -90,13 +110,19 @@ watch(currentCity, () => {
           <button type="submit"
                   class="roulette-places__submit"
                   @click.prevent="handleSpin"
+                  :disabled="!isActiveButton"
           >
             генерация места
           </button>
         </form>
       </div>
       <div class="roulette__right">
-        <TheRoulette ref="roulette" :city="city" :place="selectPlace" @selected-place="handlePlaceSelect"/>
+        <TheRoulette ref="roulette" :city="city"
+                     :place="selectPlace"
+                     @selected-place="handlePlaceSelect"
+                     @current-rotation="handleCurrentRotation"
+                     @timer-transition="handleTimerTransition"
+        />
       </div>
     </div>
   </div>
@@ -139,6 +165,9 @@ watch(currentCity, () => {
         @include flex-wrap;
         gap: 8px;
         margin-bottom: 50px;
+        [disabled] {
+          @include button-disable;
+        }
         @media (max-width: 1000px) {
           margin-bottom: 25px;
         }
@@ -151,6 +180,9 @@ watch(currentCity, () => {
         font-family: var(--medium-font-family);
         width: 100%;
         height: 45px;
+        [disabled] {
+          @include button-disable;
+        }
         &:hover {
           transform: scale(1.03);
         }
@@ -243,15 +275,18 @@ watch(currentCity, () => {
       border-radius: 25px;
       border-right: 6px solid var(--main-border-color);
       border-bottom: 6px solid var(--main-border-color);
-      padding: 70px 50px 20px 50px;
-      @media (max-width: 1300px) {
+      padding: 70px 100px 20px 50px;
+      @media (max-width: 1400px) {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         flex-wrap: nowrap;
-        padding: 70px 20px 20px 20px;
+        padding: 70px 30px 20px 30px;
         height: auto;
+      }
+      @media (max-width: 1235px) {
+        padding: 70px 30px 40px 30px;
       }
       @media (max-width: 525px) {
         padding: 60px 20px;
