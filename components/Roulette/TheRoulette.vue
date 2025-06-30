@@ -1,7 +1,7 @@
 <!--
  x - СБРОС СТАТУСА ПРИ СМЕНЕ КАТЕГОРИИ
  x - ОТКЮЧЕНИЕ КНОПКИ ПРИ ПРОКРУТКИ
- x - ВЫВОД РЕЗУЛЬТАТОВ
+ + - ВЫВОД РЕЗУЛЬТАТОВ
  x - ПРЕЛОАДЕР
 -->
 
@@ -13,7 +13,7 @@
   type Place = { id: number; title: string }
 
   const props = defineProps<{ city: string, place: string }>()
-  const emit = defineEmits(['selected-place'])
+  const emit = defineEmits(['selected-place', 'current-rotation', 'timer-transition'])
 
   const currentCity = computed(() => cities.find(c => c.city === props.city) )
 
@@ -38,11 +38,6 @@
   const timerTransitions = computed(() => {
     return Number(currentTransitions.value.split(' ')[1].replace('s', ''))
   })
-
-  watch(timerTransitions, () => {
-    console.log(timerTransitions.value)
-  })
-
 
   // логика рулетки
   class Roulette {
@@ -94,6 +89,9 @@
   const spin = () => {
     currentTransitions.value = getRandomTransition()
     const selected = roulette.value.spin(currentRotation, selectedPlace, timerTransitions)
+
+    emit('timer-transition', timerTransitions.value)
+    emit('current-rotation', currentRotation.value)
     emit('selected-place', selected)
   }
 
@@ -147,7 +145,8 @@
       </div>
     </div>
     <h2 class="roulette-results">
-      Вы идете в <span v-if="selectedPlace !== null">{{ selectedPlace }}</span>
+      Вы идете в
+      <span v-if="selectedPlace !== null">{{ selectedPlace }}</span>
       <span v-else>???</span>
     </h2>
   </div>
@@ -165,23 +164,36 @@
     background: var(--wheel-color);
     border: 3px solid var(--wheel-border-color);
     @include transition-theme(all);
+    width: 100%;
+    max-width: 495px;
+    aspect-ratio: 495 / 475;
     &-results {
-      font-size: 30px;
       font-family: var(--extrabold-font-family);
       color: var(--text-color);
+      font-size: 30px;
       @include transition-theme(all);
+      @media (max-width: 1000px) {
+        font-size: 25px;
+      }
+      @media (max-width: 500px) {
+        font-size: 20px;
+      }
+      @media (max-width: 339px) {
+        font-size: 16px;
+      }
       span {
         color: var(--red-color);
       }
     }
     &-wrapper {
-      gap: 102px;
-      @include flex-wrap;
+      @include flex-nowrap;
       width: 100%;
-      max-width: 495px;
-      aspect-ratio: 495/475;
-      flex-direction: column;
-      justify-content: center ;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 50px;
+      @media (max-width: 1235px) {
+        flex-direction: column;
+      }
     }
     &-overflow {
       position: relative;

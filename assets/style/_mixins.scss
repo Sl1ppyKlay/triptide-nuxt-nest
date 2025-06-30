@@ -28,6 +28,12 @@
   align-items: center;
 }
 
+@mixin button-disable {
+  pointer-events: none;
+  cursor: default;
+  transform: none !important;
+}
+
 @mixin button-main-design {
   background-color: var(--roulette-button-bg-color);
   font-family: var(--regular-font-family);
